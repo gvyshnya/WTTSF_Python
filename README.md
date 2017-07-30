@@ -39,5 +39,7 @@ This repo contains the following WIP artifacts
 - eda.py - the file with track of EDA for the initial data (see EDA summary above)
 - preprocessing.py - a separate file with data pre-processing routines
 - simple_model.py - a simple moving-average forecasting model (is a good starting point for benchmarking)
+- simple_model_with_weekends.py - a simple median forecasting model, calculating median by page and type of day (weekend/regular day) (is a good starting point for benchmarking, scores top 35% result on the public leaderboard as of Jul 30, 2017)
 - prophet_pred_prototype.py - a prototype of Prophet-based TS forecasting (NB: this script does not produce a forecast submission file)
+- 
 
