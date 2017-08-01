@@ -41,4 +41,6 @@ This repo contains the following WIP artifacts
 - simple_model.py - a simple moving-average forecasting model (is a good starting point for benchmarking)
 - simple_model_with_weekends.py - a simple median forecasting model, calculating median by page and type of day (weekend/regular day) (is a good starting point for benchmarking, scores top 35% result on the public leaderboard as of Jul 30, 2017)
 - prophet_pred_prototype.py - a prototype of Prophet-based TS forecasting (NB: this script does not produce a forecast submission file)
+- ProphetModeller.py is a high-level class wrapper over TS forecasting algorithms behind Prophet library/tool 
 
+**Note:** Prophet is the Facebook-developed open-source lib for producing high quality forecasts for time series data that has multiple seasonality with linear or non-linear growth (https://github.com/facebookincubator/prophet)
