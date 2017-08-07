@@ -16,6 +16,10 @@ class ProphetModeller(object):
 
         Set of product documentation on Prophet is available at
         https://facebookincubator.github.io/prophet/docs/quick_start.html
+
+        Note: in order to implement Chinese smoothening algo prototyped in Predictor class, you should act as follows
+        - initialize the instance of this class with k=1.1
+        - pass q to smoothen method as currently implemented in Predictor class
     """
 
     # TODO list:
@@ -37,12 +41,12 @@ class ProphetModeller(object):
         self._do_log_transform = do_log_transform
 
         # fake empty placeholder forecast DF, to be properly populated at predict time
-        self._forecast = pd.Dataframe(columns = ['ds', 'yhat', 'yhat_lower', 'yhat_upper'])
+        self._forecast = pd.DataFrame(columns = ['ds', 'yhat', 'yhat_lower', 'yhat_upper'])
 
         # fake empty placeholder holidays DF, to be set separately via respective property
         # before predict() call, if needed
         # see more details on holidays at https://facebookincubator.github.io/prophet/docs/holiday_effects.html
-        self._holidays = pd.Dataframe(columns = ['holiday', 'ds', 'lower_window', 'upper_window'])
+        self._holidays = pd.DataFrame(columns = ['holiday', 'ds', 'lower_window', 'upper_window'])
         self._holidays_set = 0  # if changed to 1 in the holidays setter, it will trigger model setup with holidays
 
         self._capacity_used = 0 # if changed to 1 in set_capacity, it will result in "logistic" growth set in the model
@@ -96,15 +100,13 @@ class ProphetModeller(object):
                                       holidays_prior_scale = self._holidays_prior_scale,
                                       yearly_seasonality = self._yearly_seasonality,
                                       weekly_seasonality = self._weekly_seasonality,
-                                      seasonality_prior_scale = self._seasonality_prior_scale,
-                                      freq = self._frequency)
+                                      seasonality_prior_scale = self._seasonality_prior_scale)
                 else:
                     model = fbpro.Prophet(growth='logistic',
                                       changepoint_prior_scale = self._changepoint_prior_scale,
                                       yearly_seasonality = self._yearly_seasonality,
                                       weekly_seasonality = self._weekly_seasonality,
-                                      seasonality_prior_scale = self._seasonality_prior_scale,
-                                      freq = self._frequency)
+                                      seasonality_prior_scale = self._seasonality_prior_scale)
             else:
                 if self._holidays_set:
                     model = fbpro.Prophet(changepoint_prior_scale = self._changepoint_prior_scale,
@@ -112,17 +114,15 @@ class ProphetModeller(object):
                                       holidays_prior_scale=self._holidays_prior_scale,
                                       yearly_seasonality = self._yearly_seasonality,
                                       weekly_seasonality = self._weekly_seasonality,
-                                      seasonality_prior_scale = self._seasonality_prior_scale,
-                                      freq = self._frequency)
+                                      seasonality_prior_scale = self._seasonality_prior_scale)
                 else:
                     model = fbpro.Prophet(changepoint_prior_scale=self._changepoint_prior_scale,
                                       yearly_seasonality = self._yearly_seasonality,
                                       weekly_seasonality = self._weekly_seasonality,
-                                      seasonality_prior_scale = self._seasonality_prior_scale,
-                                      freq = self._frequency)
+                                      seasonality_prior_scale = self._seasonality_prior_scale)
 
             model.fit(df)
-            future = model.make_future_dataframe(periods=self._future_periods)
+            future = model.make_future_dataframe(periods=self._future_periods, freq = self._frequency)
 
             # this will return data for columns ['ds', 'yhat', 'yhat_lower', 'yhat_upper'] always
             # ds - datetime stamp of the point in observations
